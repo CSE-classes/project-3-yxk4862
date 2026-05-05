@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&total_lock,NULL);
 	readf(fp);
 	for(i=0;i<NUM_THREADS;i++){
-		rc=pthread_create(&threads[i],NULL,sub_string,(void *)i);
+		rc=pthread_create(&threads[i],NULL,sub_string,(void *)(long)i);
 		if (rc){
 			printf("ERROR: return error from pthread_create() is %d\n", rc);
 			exit(-1);
@@ -55,7 +55,7 @@ int readf(FILE *fp)
 		return -1;
 	}
 	s2=(char *)malloc(sizeof(char)*MAX);
-	if(s1==NULL){
+	if(s2==NULL){
 		printf("ERROR: Out of memory\n");
 		return -1;
 	}
@@ -69,15 +69,48 @@ int readf(FILE *fp)
 		return -1;
 }
 
-void *sub_string(void *threadid) 	/*each process searches in the string with the step of nprocs until it reach or beyond*/ 
-	/*the (n1-n2)th char which is the last possible beginning of the substring*/
-{
+void *sub_string(void *threadid){
 
+    long id = (long)threadid;
+
+    int left = id * nlocal;
+    int right;
+
+    int i, j;
+    int found;
+
+    int matches = 0;
+
+    if(id == NUM_THREADS - 1)
+        right = n1 - n2;
+    else{
+        right = left + nlocal - 1;
+    }
+
+    for(i = left; i <= right; i++){
+
+        found = 1;
+
+        for(j = 0; j < n2; j++){
+
+            if(s1[i + j] != s2[j]){
+                found = 0;
+                break;
+            }
+
+        }
+
+        if(found == 1){
+            matches++;
+        }
+
+    }
+
+    pthread_mutex_lock(&total_lock);
+
+    total += matches;
+
+    pthread_mutex_unlock(&total_lock);
+
+    return NULL;
 }
-
-
-
-
-
-
-

@@ -1,0 +1,20 @@
+Assignment 1:
+In String_pthread.c, I used multiple threads to search for occurrences of a substring inside another string. Each thread checks a different section of the string, and a mutex lock is used while updating the final total count.
+
+Assignment 2:
+In producer_consumer.c, I implemented the producer-consumer problem using one producer thread and one consumer thread with mutexes and condition variables. The producer reads characters from message.txt into a circular buffer, and the consumer prints them in the same order.
+
+Assignment 3:
+In my_list-forming.c, I optimized the original list-forming.c program by reducing mutex lock usage. Each thread first creates a local linked list and then attaches the full list to the global list using one mutex lock.
+
+Other Files:
+
+* strings.txt is used for Assignment 1 input.
+* message.txt is used for Assignment 2 input.
+* substring.c and list-forming.c are the original files provided in the repository.
+
+The project was submitted in 3 separate commits:
+
+* Finish Assignment 1
+* Finish Assignment 2
+* Finish Assignment 3
